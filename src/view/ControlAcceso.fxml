@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.ControlAccesoController"
+            styleClass="root"
+            minWidth="800" minHeight="500">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70" spacing="20"
+              style="-fx-background-color: linear-gradient(to right,#1a237e,#283593);
+                     -fx-padding: 0 25 0 25;">
+            <Button fx:id="btnVolverAcceso" onAction="#handleVolver"
+                    prefHeight="44" prefWidth="110"
+                    style="-fx-background-color: transparent; -fx-border-color: white;
+                           -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;
+                           -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px;
+                           -fx-cursor: hand;"/>
+            <Label fx:id="lblTituloAcceso"
+                   style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: white;" />
+        </HBox>
+    </top>
+
+    <center>
+        <HBox spacing="18" alignment="TOP_CENTER"
+              BorderPane.alignment="CENTER">
+            <padding><Insets top="20" bottom="20" left="20" right="20" /></padding>
+
+            <VBox spacing="12" HBox.hgrow="ALWAYS"
+                  style="-fx-background-color: #1a1f3a; -fx-background-radius: 14;
+                         -fx-padding: 18;
+                         -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.4),16,0,0,5);">
+
+                <Label fx:id="lblCamTitle"
+                       style="-fx-font-size: 16px; -fx-font-weight: bold;
+                              -fx-text-fill: #e8eaf6;" />
+                <StackPane style="-fx-background-color: #000000; -fx-background-radius: 10;"
+                           alignment="CENTER"
+                           VBox.vgrow="ALWAYS"
+                           prefHeight="420" minHeight="300">
+                    <ImageView fx:id="imgCamera"
+                               preserveRatio="true"
+                               fitWidth="640" fitHeight="420" />
+                </StackPane>
+            </VBox>
+
+            <VBox spacing="14"
+                  prefWidth="280" minWidth="260" maxWidth="300"
+                  alignment="TOP_CENTER"
+                  HBox.hgrow="NEVER">
+
+                <VBox spacing="12"
+                      style="-fx-background-color: #1a1f3a; -fx-background-radius: 14;
+                             -fx-padding: 20;
+                             -fx-effect: dropshadow(gaussian,rgba(0,0,0,0.4),16,0,0,5);">
+
+                    <Label fx:id="lblEstadoSistema"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold;
+                                  -fx-text-fill: #9fa8da;" />
+                    <Separator style="-fx-opacity: 0.3;" />
+
+                    <VBox spacing="4">
+                        <Label fx:id="lblHoraLabel"
+                               style="-fx-font-size: 11px; -fx-text-fill: #7986cb;" />
+                        <Label fx:id="lblHoraActual" text="00:00:00"
+                               style="-fx-font-size: 20px; -fx-font-weight: bold;
+                                      -fx-text-fill: #e8eaf6;" />
+                    </VBox>
+
+                    <VBox spacing="4">
+                        <Label fx:id="lblEstadoLabel"
+                               style="-fx-font-size: 11px; -fx-text-fill: #7986cb;" />
+                        <Label fx:id="lblEstado"
+                               style="-fx-font-size: 16px; -fx-font-weight: bold;
+                                      -fx-text-fill: #ef5350;" />
+                    </VBox>
+
+                    <Separator style="-fx-opacity: 0.3;" />
+
+                    <VBox spacing="4">
+                        <Label fx:id="lblAlumnoLabel"
+                               style="-fx-font-size: 11px; -fx-text-fill: #7986cb;" />
+                        <Label fx:id="lblAlumnoDetectado" text="---"
+                               style="-fx-font-size: 14px; -fx-font-weight: bold;
+                                      -fx-text-fill: #e8eaf6; -fx-wrap-text: true;" />
+                    </VBox>
+                </VBox>
+
+                <Button fx:id="btnIniciarEscaneo" onAction="#handleIniciarEscaneo"
+                        maxWidth="Infinity" prefHeight="52"
+                        style="-fx-background-color: linear-gradient(to bottom,#1565c0,#0d47a1);
+                               -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15px;
+                               -fx-background-radius: 12; -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian,rgba(21,101,192,0.5),12,0,0,4);"/>
+
+                <Button fx:id="btnDetenerEscaneo" onAction="#handleDetenerEscaneo"
+                        maxWidth="Infinity" prefHeight="52"
+                        style="-fx-background-color: transparent; -fx-border-color: #ef5350;
+                               -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12;
+                               -fx-text-fill: #ef5350; -fx-font-weight: bold; -fx-font-size: 15px;
+                               -fx-cursor: hand;"/>
+            </VBox>
+        </HBox>
+    </center>
+</BorderPane>

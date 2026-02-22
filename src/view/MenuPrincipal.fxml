@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controller.MenuPrincipalController"
+           styleClass="root">
+
+    <HBox alignment="TOP_RIGHT" StackPane.alignment="TOP_RIGHT">
+        <padding><Insets top="28" right="28" /></padding>
+        <HBox spacing="12">
+            <Button fx:id="btnIdioma"
+                    onAction="#handleCambiarIdioma"
+                    prefHeight="60" prefWidth="170"
+                    style="-fx-background-color: #283593; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-font-size: 14px;
+                           -fx-background-radius: 12; -fx-cursor: hand;"/>
+            <Button fx:id="btnToggleTheme"
+                    prefHeight="60" prefWidth="60"
+                    styleClass="theme-button"
+                    onAction="#handleToggleTheme" />
+        </HBox>
+    </HBox>
+
+    <VBox alignment="CENTER" spacing="65" maxWidth="950">
+
+        <VBox alignment="CENTER" spacing="18">
+            <Label text="VISIONEDU"
+                   styleClass="label-title"
+                   style="-fx-font-size: 90px; -fx-font-weight: bold;" />
+            <!-- fx:id para traducción -->
+            <Label fx:id="lblSubtitulo"
+                   styleClass="label-subtitle"
+                   style="-fx-font-size: 26px;" />
+        </VBox>
+
+        <VBox alignment="CENTER" spacing="30" maxWidth="780">
+            <Button fx:id="btnGestionAlumnos"
+                    prefHeight="110" maxWidth="Infinity"
+                    styleClass="menu-button"
+                    style="-fx-font-size: 28px; -fx-font-weight: bold;"
+                    onAction="#handleGestionAlumnos" />
+
+            <Button fx:id="btnControlAcceso"
+                    prefHeight="110" maxWidth="Infinity"
+                    styleClass="menu-button"
+                    style="-fx-font-size: 28px; -fx-font-weight: bold;"
+                    onAction="#handleControlAcceso" />
+
+            <Button fx:id="btnHistorialAsistencia"
+                    prefHeight="110" maxWidth="Infinity"
+                    styleClass="menu-button"
+                    style="-fx-font-size: 28px; -fx-font-weight: bold;"
+                    onAction="#handleHistorialAsistencia" />
+
+
+            <Button fx:id="btnCerrarSesion"
+                    prefHeight="80" prefWidth="340"
+                    styleClass="logout-button"
+                    style="-fx-font-size: 20px; -fx-font-weight: bold;"
+                    onAction="#handleCerrarSesion" />
+        </VBox>
+    </VBox>
+</StackPane>

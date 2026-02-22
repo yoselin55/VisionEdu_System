@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+
+<StackPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="controller.LoginController" styleClass="root">
+
+    <VBox alignment="CENTER" maxWidth="480" maxHeight="600" spacing="25" styleClass="login-card">
+        <padding><Insets top="50" bottom="50" left="50" right="50" /></padding>
+
+        <StackPane>
+            <Circle radius="60" style="-fx-fill: linear-gradient(to bottom right, #667eea, #764ba2);" />
+            <Label text="👁" style="-fx-font-size: 60px;" />
+        </StackPane>
+
+        <VBox alignment="CENTER" spacing="8">
+            <Label text="VISIONEDU SYSTEM" styleClass="label-title"
+                   style="-fx-font-size: 32; -fx-font-weight: bold;" />
+            <!-- fx:id para traducir el subtítulo -->
+            <Label fx:id="lblSubtituloLogin" styleClass="label-subtitle" />
+        </VBox>
+
+        <VBox spacing="15" maxWidth="Infinity">
+            <TextField fx:id="txtUsuario"
+                       styleClass="text-field-custom" prefHeight="45" />
+            <PasswordField fx:id="txtPassword"
+                           styleClass="text-field-custom" prefHeight="45" />
+        </VBox>
+
+        <Button fx:id="btnLogin" onAction="#handleLogin"
+                maxWidth="Infinity" prefHeight="55" styleClass="menu-button" />
+
+        <Label text="Versión 1.0 - 2026" styleClass="label-subtitle"
+               style="-fx-font-size: 11;" />
+    </VBox>
+</StackPane>

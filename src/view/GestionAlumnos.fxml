@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.GestionAlumnosController"
+            styleClass="root">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="70" spacing="20"
+              styleClass="header-panel" minHeight="60">
+            <padding><Insets left="25" right="25" /></padding>
+            <Button fx:id="btnVolver" onAction="#handleVolver"
+                    styleClass="logout-button"
+                    prefHeight="46" prefWidth="120"
+                    style="-fx-font-size: 14px; -fx-border-color: white; -fx-text-fill: white;"/>
+            <Label fx:id="lblTitulo" styleClass="label-title"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" />
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" styleClass="scroll-pane">
+            <VBox spacing="20">
+                <padding><Insets top="22" bottom="22" left="22" right="22" /></padding>
+
+                <GridPane hgap="20" vgap="20">
+                    <columnConstraints>
+                        <!-- Formulario: 36% pero mínimo 320px -->
+                        <ColumnConstraints percentWidth="36" minWidth="320" />
+                        <!-- Tabla: resto del espacio -->
+                        <ColumnConstraints hgrow="ALWAYS" minWidth="300" />
+                    </columnConstraints>
+
+                    <VBox spacing="16" GridPane.columnIndex="0" styleClass="content-card">
+                        <padding><Insets top="28" bottom="28" left="28" right="28" /></padding>
+
+                        <Label fx:id="lblDatosAlumno" styleClass="label-title"
+                               style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+
+                        <TextField fx:id="txtNombre"
+                                   styleClass="text-field-custom"
+                                   prefHeight="46" maxWidth="Infinity"/>
+                        <TextField fx:id="txtApellido"
+                                   styleClass="text-field-custom"
+                                   prefHeight="46" maxWidth="Infinity"/>
+                        <TextField fx:id="txtDni"
+                                   styleClass="text-field-custom"
+                                   prefHeight="46" maxWidth="Infinity"/>
+                        <ComboBox fx:id="cmbGrado"
+                                  maxWidth="Infinity"
+                                  styleClass="text-field-custom"
+                                  prefHeight="46"/>
+
+                        <GridPane hgap="10" vgap="10">
+                            <columnConstraints>
+                                <ColumnConstraints percentWidth="50" />
+                                <ColumnConstraints percentWidth="50" />
+                            </columnConstraints>
+                            <Button fx:id="btnRegistrar" onAction="#handleRegistrar"
+                                    styleClass="menu-button"
+                                    maxWidth="Infinity" prefHeight="50"
+                                    GridPane.columnIndex="0" GridPane.rowIndex="0"
+                                    style="-fx-font-size: 14px;"/>
+                            <Button fx:id="btnCapturar" onAction="#handleCapturarBiometrica"
+                                    maxWidth="Infinity" prefHeight="50"
+                                    GridPane.columnIndex="1" GridPane.rowIndex="0"
+                                    style="-fx-background-color: linear-gradient(to right,#3498db,#2980b9);
+                                           -fx-text-fill: white; -fx-font-weight: bold;
+                                           -fx-background-radius: 12; -fx-font-size: 14px;
+                                           -fx-cursor: hand;"/>
+                            <Button fx:id="btnActualizar" onAction="#handleActualizar"
+                                    styleClass="logout-button"
+                                    maxWidth="Infinity" prefHeight="50"
+                                    GridPane.columnIndex="0" GridPane.rowIndex="1"
+                                    style="-fx-font-size: 14px;"/>
+                            <Button fx:id="btnEliminar" onAction="#handleEliminar"
+                                    maxWidth="Infinity" prefHeight="50"
+                                    GridPane.columnIndex="1" GridPane.rowIndex="1"
+                                    style="-fx-background-color: #e74c3c; -fx-text-fill: white;
+                                           -fx-font-weight: bold; -fx-border-radius: 12;
+                                           -fx-background-radius: 12; -fx-font-size: 14px;
+                                           -fx-cursor: hand;"/>
+                        </GridPane>
+                    </VBox>
+
+                    <VBox spacing="16" GridPane.columnIndex="1" VBox.vgrow="ALWAYS">
+
+                        <!-- Barra de búsqueda -->
+                        <HBox spacing="12">
+                            <TextField fx:id="txtBuscar"
+                                       HBox.hgrow="ALWAYS"
+                                       styleClass="text-field-custom"
+                                       prefHeight="46"/>
+                            <Button fx:id="btnBuscar" onAction="#handleBuscar"
+                                    styleClass="menu-button"
+                                    prefWidth="130" prefHeight="46"
+                                    style="-fx-font-size: 14px;"/>
+                        </HBox>
+                        <TableView fx:id="tablaAlumnos"
+                                   VBox.vgrow="ALWAYS"
+                                   styleClass="table-view"
+                                   minHeight="300">
+                            <columns>
+                                <TableColumn fx:id="colId"            prefWidth="55"  minWidth="45"/>
+                                <TableColumn fx:id="colNombre"        prefWidth="120" minWidth="80"/>
+                                <TableColumn fx:id="colApellido"      prefWidth="120" minWidth="80"/>
+                                <TableColumn fx:id="colDni"           prefWidth="90"  minWidth="70"/>
+                                <TableColumn fx:id="colGrado"         prefWidth="100" minWidth="70"/>
+                                <TableColumn fx:id="colFechaRegistro" prefWidth="130" minWidth="100"/>
+                            </columns>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                            </columnResizePolicy>
+                        </TableView>
+                    </VBox>
+                </GridPane>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>
