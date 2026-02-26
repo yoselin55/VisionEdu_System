@@ -5,6 +5,41 @@ desarrollado en Java con JavaFX y OpenCV.
 
 ---
 
+## 📸 Capturas del Sistema
+
+<div align="center">
+
+### 🔐 Login
+![Login](docs/screenshots/login.png)
+
+### 🏠 Menú Principal
+![Menu](docs/screenshots/menu.png)
+
+### 👨‍🎓 Gestión de Alumnos
+![Gestion](docs/screenshots/gestion.png)
+
+### 📷 Captura Biométrica
+![Captura](docs/screenshots/captura.png)
+
+### 🎯 Control de Acceso
+![Acceso](docs/screenshots/acceso.png)
+
+### 📊 Historial de Asistencias
+![Historial](docs/screenshots/historial.png)
+
+### 📤 Exportar Reporte
+![Exportar](docs/screenshots/exportar.png)
+
+### 📄 Reporte PDF
+![PDF](docs/screenshots/pdf.png)
+
+### 📊 Reporte Excel
+![Excel](docs/screenshots/excel.png)
+
+</div>
+
+---
+
 ## 📋 Requisitos
 
 Antes de ejecutar el proyecto necesitas tener instalado:
@@ -68,7 +103,22 @@ mvn javafx:run
 
 ---
 
+## 🕐 Sistema de Asistencia — Horarios
+
+El sistema registra el estado del alumno según la hora en que escanea su rostro:
+
+| Estado | Horario |
+|--------|---------|
+| ✅ **Presente** | Antes de las **8:00 AM** |
+| 🟡 **Tarde** | Entre las **8:00 AM** y la **1:00 PM** |
+| ❌ **Falta** | Después de la **1:00 PM** |
+
+> Los alumnos que no se presenten en todo el día reciben **Falta** automáticamente al día siguiente.
+
+---
+
 ## 📁 Estructura del Proyecto
+
 ```
 VisionEdu/
 ├── src/
@@ -82,6 +132,8 @@ VisionEdu/
 │   ├── services/        # Generación de reportes
 │   ├── utils/           # Tema e idiomas
 │   └── view/            # Interfaces FXML
+├── docs/
+│   └── screenshots/     # Capturas del sistema
 ├── database/
 │   └── schema.sql       # Script de base de datos
 └── README.md
