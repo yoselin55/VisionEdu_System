@@ -83,8 +83,9 @@ Abre el archivo `src/config/Conexion.java` y cambia
 los datos según tu instalación de MySQL:
 ```java
 private static final String URL  = "jdbc:mysql://localhost:3306/visionedu";
-private static final String USER = "root";       
-private static final String PASS = "";          
+private static final String USER = "root";        // tu usuario de MySQL
+private static final String PASS = "";            // tu contraseña de MySQL
+```
 
 ---
 
