@@ -32,27 +32,34 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ControlAccesoController {
+
     @FXML private ImageView imgCamera;
     @FXML private Button    btnIniciarEscaneo, btnDetenerEscaneo;
     @FXML private Label     lblEstado, lblAlumnoDetectado, lblHoraActual;
     @FXML private Label     lblTituloAcceso, lblCamTitle, lblEstadoSistema;
     @FXML private Label     lblHoraLabel, lblEstadoLabel, lblAlumnoLabel;
     @FXML private Button    btnVolverAcceso;
+
     private FaceRecognition faceRecognition;
     private AlumnoDAO       alumnoDAO;
     private AsistenciaDAO   asistenciaDAO;
     private VideoCapture    camera;
     private Timeline        timeline;
     private LocalDate       fechaUltimoChequeo;
+
     private int lastRecognizedId  = -1;
     private int framesDenegados   = 0;
     private int framesReconocidos = 0;
+    private boolean enCooldown    = false;
 
-    private boolean enCooldown = false;
+    private static final int FRAMES_NECESARIOS = 3;
 
-    private static final int       FRAMES_NECESARIOS  = 3;
-    private static final LocalTime HORA_LIMITE_FALTA  = LocalTime.of(1, 0);
-    private static final LocalTime HORA_LIMITE_PUNTUAL = LocalTime.of(8, 0);
+    // ── Horarios corregidos ──────────────────────────────────────────────────
+    // Presente : antes de las 8:00 AM
+    // Tarde    : entre 8:00 AM y 1:00 PM (13:00)
+    // Falta    : después de la 1:00 PM (13:00)
+    private static final LocalTime HORA_LIMITE_PUNTUAL = LocalTime.of(8,  0);  // 8:00 AM
+    private static final LocalTime HORA_LIMITE_FALTA   = LocalTime.of(13, 0);  // 1:00 PM
 
     private final OpenCVFrameConverter.ToMat converterToMat   =
             new OpenCVFrameConverter.ToMat();
@@ -68,7 +75,7 @@ public class ControlAccesoController {
         fechaUltimoChequeo = LocalDate.now();
         asistenciaDAO.cerrarDiaAnterior();
         aplicarIdioma();
-        actualizarHora(); // ← conservado del original
+        actualizarHora();
     }
 
     private void aplicarIdioma() {
@@ -93,6 +100,7 @@ public class ControlAccesoController {
         if (lblEstado != null) lblEstado.setText(
                 IdiomaManager.t("acceso.detenido"));
     }
+
     private void actualizarHora() {
         Timeline reloj = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
             LocalTime ahora = LocalTime.now();
@@ -106,7 +114,7 @@ public class ControlAccesoController {
                 System.out.println("Nuevo dia: " + hoy);
             }
 
-            // Color dinámico: rojo si pasó hora límite ← conservado
+            // Rojo si ya pasó la hora límite de falta (1 PM)
             lblHoraActual.setStyle(ahora.isAfter(HORA_LIMITE_FALTA)
                     ? "-fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:#ef5350;"
                     : "-fx-font-size:20px;-fx-font-weight:bold;-fx-text-fill:#e8eaf6;");
@@ -152,7 +160,6 @@ public class ControlAccesoController {
         int id = faceRecognition.recognizeFace(frame);
 
         if (id > 0) {
-            // Rostro reconocido en la BD ← lógica original conservada
             framesDenegados = 0;
             framesReconocidos++;
             if (framesReconocidos >= FRAMES_NECESARIOS && id != lastRecognizedId) {
@@ -171,7 +178,6 @@ public class ControlAccesoController {
             }
 
         } else if (id == -2) {
-            // Rostro detectado pero NO está en BD
             framesReconocidos = 0;
             framesDenegados++;
             if (framesDenegados >= FRAMES_NECESARIOS && lastRecognizedId != -2) {
@@ -179,8 +185,6 @@ public class ControlAccesoController {
                 lastRecognizedId = -2;
                 enCooldown       = true;
                 Platform.runLater(this::mostrarAccesoDenegado);
-
-                // Cooldown ← lógica original conservada
                 Timeline cooldown = new Timeline(
                         new KeyFrame(Duration.seconds(4), e -> {
                             lastRecognizedId = -1;
@@ -220,9 +224,13 @@ public class ControlAccesoController {
     private void procesarAsistencia(int idAlumno) {
         LocalTime horaActual = LocalTime.now();
         String estado;
-        if      (horaActual.isAfter(HORA_LIMITE_FALTA))    estado = "Falta";
-        else if (horaActual.isBefore(HORA_LIMITE_PUNTUAL)) estado = "Presente";
-        else                                                 estado = "Tarde";
+        if (horaActual.isBefore(HORA_LIMITE_PUNTUAL)) {
+            estado = "Presente";
+        } else if (horaActual.isBefore(HORA_LIMITE_FALTA)) {
+            estado = "Tarde";
+        } else {
+            estado = "Falta";
+        }
 
         if (asistenciaDAO.verificarAsistenciaHoy(idAlumno)) {
             Platform.runLater(() -> {

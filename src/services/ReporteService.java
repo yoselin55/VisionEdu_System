@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 
 public class ReporteService {
 
-
     public List<Asistencia> filtrarPorAnio(List<Asistencia> lista, int anio) {
         return lista.stream()
                 .filter(a -> a.getFecha() != null &&
@@ -37,8 +36,7 @@ public class ReporteService {
                 .collect(Collectors.toList());
     }
 
-    public List<Asistencia> filtrarPorSemana(List<Asistencia> lista,
-                                             LocalDate inicioSemana) {
+    public List<Asistencia> filtrarPorSemana(List<Asistencia> lista, LocalDate inicioSemana) {
         LocalDate fin = inicioSemana.plusDays(6);
         return lista.stream()
                 .filter(a -> a.getFecha() != null)
@@ -70,7 +68,7 @@ public class ReporteService {
                 .map(e -> e.getKey() + " (" + e.getValue() + ")")
                 .orElse("Ninguno");
 
-        long total    = lista.size();
+        long total     = lista.size();
         long presentes = lista.stream()
                 .filter(a -> "Presente".equalsIgnoreCase(a.getEstado())).count();
         double tasa = total > 0 ? (double) presentes / total * 100 : 0;
@@ -96,6 +94,7 @@ public class ReporteService {
             Map<String, String> stats = analizarEstadisticas(lista);
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+            // ── Estilos ──────────────────────────────────────────────────────
             CellStyle titleStyle = wb.createCellStyle();
             org.apache.poi.ss.usermodel.Font tf = wb.createFont();
             tf.setBold(true); tf.setFontHeightInPoints((short) 16);
@@ -151,23 +150,26 @@ public class ReporteService {
             setBorders(statStyle, BorderStyle.THIN);
             statStyle.setAlignment(HorizontalAlignment.CENTER);
 
+            // ── Encabezado del reporte ────────────────────────────────────────
             Row r0 = sheet.createRow(0);
             Cell c0 = r0.createCell(0);
             c0.setCellValue("VISIONEDU - REPORTE DE ASISTENCIA");
             c0.setCellStyle(titleStyle);
-            sheet.addMergedRegion(new CellRangeAddress(0,0,0,6));
+            sheet.addMergedRegion(new CellRangeAddress(0, 0, 0, 7));
 
             Row r1 = sheet.createRow(1);
             Cell c1 = r1.createCell(0);
             c1.setCellValue("Periodo: " + tituloPeriodo);
             c1.setCellStyle(periodoStyle);
-            sheet.addMergedRegion(new CellRangeAddress(1,1,0,6));
+            sheet.addMergedRegion(new CellRangeAddress(1, 1, 0, 7));
 
             Row r2 = sheet.createRow(2);
             r2.createCell(0).setCellValue("Generado: " + LocalDateTime.now().format(dtf));
 
+            // ── Fila de estadísticas ──────────────────────────────────────────
             Row r4 = sheet.createRow(4);
-            String[] statLabels = {"Total", "Presentes", "Tardanzas", "Faltas", "Puntualidad", "Alumno estrella"};
+            String[] statLabels = {"Total", "Presentes", "Tardanzas", "Faltas",
+                    "Puntualidad", "Alumno estrella"};
             long total     = lista.size();
             long presentes = lista.stream().filter(a -> "Presente".equalsIgnoreCase(a.getEstado())).count();
             long tardes    = lista.stream().filter(a -> "Tarde".equalsIgnoreCase(a.getEstado())).count();
@@ -189,19 +191,22 @@ public class ReporteService {
                 val.setCellStyle(statStyle);
             }
 
-            String[] headers = {"ID", "ALUMNO", "DÍA", "FECHA", "HORA", "ESTADO", "GRADO"};
+            // ── Cabecera de tabla — ahora con GRADO ───────────────────────────
+            String[] headers = {"ID", "ALUMNO", "GRADO", "DÍA", "FECHA", "HORA", "ESTADO"};
             Row hr = sheet.createRow(7);
             for (int i = 0; i < headers.length; i++) {
                 Cell c = hr.createCell(i);
                 c.setCellValue(headers[i]);
                 c.setCellStyle(headerStyle);
             }
+
+            // ── Datos agrupados por alumno ────────────────────────────────────
             Map<String, List<Asistencia>> porAlumno = lista.stream()
-                    .collect(Collectors.groupingBy(Asistencia::getNombreAlumno));
+                    .collect(Collectors.groupingBy(a ->
+                            a.getNombreAlumno() != null ? a.getNombreAlumno() : ""));
 
             int rowNum = 8;
             for (Map.Entry<String, List<Asistencia>> entry : porAlumno.entrySet()) {
-                // Ordenar por fecha
                 List<Asistencia> asists = entry.getValue().stream()
                         .sorted((a, b) -> {
                             if (a.getFecha() == null) return 1;
@@ -215,6 +220,8 @@ public class ReporteService {
 
                     setCellData(row, 0, String.valueOf(a.getIdAlumno()), dataStyle);
                     setCellData(row, 1, a.getNombreAlumno() != null ? a.getNombreAlumno() : "—", dataStyle);
+                    // ← columna GRADO nueva
+                    setCellData(row, 2, a.getGrado() != null ? a.getGrado() : "—", dataStyle);
 
                     String dia = "—";
                     if (a.getFecha() != null) {
@@ -228,35 +235,32 @@ public class ReporteService {
                             case SUNDAY    -> "Domingo";
                         };
                     }
-                    setCellData(row, 2, dia, dataStyle);
-                    setCellData(row, 3, a.getFecha() != null ? a.getFecha().toString() : "—", dataStyle);
+                    setCellData(row, 3, dia, dataStyle);
+                    setCellData(row, 4, a.getFecha() != null ? a.getFecha().toString() : "—", dataStyle);
 
                     String hora = "—";
                     if (a.getHora() != null) {
                         String hs = a.getHora().toString();
                         hora = hs.length() >= 5 ? hs.substring(0, 5) : hs;
                     }
-                    setCellData(row, 4, hora, dataStyle);
+                    setCellData(row, 5, hora, dataStyle);
 
                     // Estado con color
-                    Cell cEst = row.createCell(5);
+                    Cell cEst = row.createCell(6);
                     cEst.setCellValue(a.getEstado() != null ? a.getEstado() : "—");
-                    if ("Presente".equalsIgnoreCase(a.getEstado()))     cEst.setCellStyle(presenteStyle);
-                    else if ("Tarde".equalsIgnoreCase(a.getEstado()))   cEst.setCellStyle(tardeStyle);
-                    else if ("Falta".equalsIgnoreCase(a.getEstado()))   cEst.setCellStyle(faltaStyle);
-                    else                                                 cEst.setCellStyle(dataStyle);
-
-                    setCellData(row, 6, "—", dataStyle);
+                    if      ("Presente".equalsIgnoreCase(a.getEstado())) cEst.setCellStyle(presenteStyle);
+                    else if ("Tarde".equalsIgnoreCase(a.getEstado()))    cEst.setCellStyle(tardeStyle);
+                    else if ("Falta".equalsIgnoreCase(a.getEstado()))    cEst.setCellStyle(faltaStyle);
+                    else                                                  cEst.setCellStyle(dataStyle);
                 }
             }
-
 
             for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
 
             try (FileOutputStream out = new FileOutputStream(ruta)) {
                 wb.write(out);
             }
-            System.out.println(" Excel exportado: " + ruta);
+            System.out.println("Excel exportado: " + ruta);
         }
     }
 
@@ -271,7 +275,7 @@ public class ReporteService {
         style.setBorderLeft(bs); style.setBorderRight(bs);
     }
 
-    // ======== PDF ========
+    // ── PDF ──────────────────────────────────────────────────────────────────
 
     public void exportarPDF(List<Asistencia> lista, String ruta) throws Exception {
         exportarPDFConPeriodo(lista, ruta, "Reporte Completo");
@@ -299,29 +303,29 @@ public class ReporteService {
         doc.add(new Paragraph("Generado el: " + LocalDateTime.now().format(dtf), fSub));
         doc.add(new Paragraph(" "));
 
-        // Tabla resumen estadístico
+        // Resumen estadístico
         PdfPTable resumen = new PdfPTable(4);
         resumen.setWidthPercentage(100);
         long total     = lista.size();
         long presentes = lista.stream().filter(a -> "Presente".equalsIgnoreCase(a.getEstado())).count();
         long tardes    = lista.stream().filter(a -> "Tarde".equalsIgnoreCase(a.getEstado())).count();
         long faltas    = lista.stream().filter(a -> "Falta".equalsIgnoreCase(a.getEstado())).count();
-
-        resumen.addCell(statCell("Total: " + total,          new BaseColor(200, 210, 240)));
-        resumen.addCell(statCell("Presentes: " + presentes,  new BaseColor(200, 230, 201)));
-        resumen.addCell(statCell("Tardanzas: " + tardes,     new BaseColor(255, 236, 179)));
-        resumen.addCell(statCell("Faltas: " + faltas,        new BaseColor(255, 205, 210)));
+        resumen.addCell(statCell("Total: "     + total,     new BaseColor(200, 210, 240)));
+        resumen.addCell(statCell("Presentes: " + presentes, new BaseColor(200, 230, 201)));
+        resumen.addCell(statCell("Tardanzas: " + tardes,    new BaseColor(255, 236, 179)));
+        resumen.addCell(statCell("Faltas: "    + faltas,    new BaseColor(255, 205, 210)));
         doc.add(resumen);
         doc.add(new Paragraph("Puntualidad: " + stats.get("tasaPuntualidad") +
                 "   |   Alumno estrella: " + stats.get("estrella"), fSub));
         doc.add(new Paragraph(" "));
 
-        // Tabla datos
-        PdfPTable table = new PdfPTable(6);
+        // ── Tabla datos — ahora con GRADO ────────────────────────────────────
+        PdfPTable table = new PdfPTable(7);
         table.setWidthPercentage(100);
-        table.setWidths(new float[]{0.8f, 3.5f, 1.2f, 1.5f, 1.2f, 1.5f});
+        // ← ancho relativo de cada columna, GRADO agregado
+        table.setWidths(new float[]{0.6f, 2.8f, 1.5f, 1.0f, 1.3f, 1.0f, 1.3f});
 
-        String[] headers = {"ID", "ALUMNO", "DÍA", "FECHA", "HORA", "ESTADO"};
+        String[] headers = {"ID", "ALUMNO", "GRADO", "DÍA", "FECHA", "HORA", "ESTADO"};
         for (String h : headers) {
             PdfPCell cell = new PdfPCell(new Phrase(h, fHead));
             cell.setBackgroundColor(new BaseColor(26, 35, 126));
@@ -330,7 +334,6 @@ public class ReporteService {
             table.addCell(cell);
         }
 
-        // Ordenar por fecha luego nombre
         List<Asistencia> ordenada = lista.stream()
                 .sorted((a, b) -> {
                     if (a.getFecha() == null) return 1;
@@ -338,16 +341,15 @@ public class ReporteService {
                     int cmp = a.getFecha().compareTo(b.getFecha());
                     if (cmp != 0) return cmp;
                     return a.getNombreAlumno() != null
-                            ? a.getNombreAlumno().compareTo(b.getNombreAlumno() != null ? b.getNombreAlumno() : "")
+                            ? a.getNombreAlumno().compareTo(
+                            b.getNombreAlumno() != null ? b.getNombreAlumno() : "")
                             : 0;
                 })
                 .collect(Collectors.toList());
 
         boolean altRow = false;
         for (Asistencia a : ordenada) {
-            BaseColor rowBg = altRow
-                    ? new BaseColor(245, 245, 250)
-                    : BaseColor.WHITE;
+            BaseColor rowBg = altRow ? new BaseColor(245, 245, 250) : BaseColor.WHITE;
             altRow = !altRow;
 
             String dia = "—";
@@ -365,11 +367,13 @@ public class ReporteService {
             String hora = "—";
             if (a.getHora() != null) {
                 String hs = a.getHora().toString();
-                hora = hs.length() >= 5 ? hs.substring(0,5) : hs;
+                hora = hs.length() >= 5 ? hs.substring(0, 5) : hs;
             }
 
-            addPdfCell(table, String.valueOf(a.getIdAlumno()), fBody, rowBg, Element.ALIGN_CENTER);
+            addPdfCell(table, String.valueOf(a.getIdAlumno()),                          fBody, rowBg, Element.ALIGN_CENTER);
             addPdfCell(table, a.getNombreAlumno() != null ? a.getNombreAlumno() : "—", fBold, rowBg, Element.ALIGN_LEFT);
+            // ← celda GRADO nueva
+            addPdfCell(table, a.getGrado() != null ? a.getGrado() : "—",              fBody, rowBg, Element.ALIGN_CENTER);
             addPdfCell(table, dia,                                                      fBody, rowBg, Element.ALIGN_CENTER);
             addPdfCell(table, a.getFecha() != null ? a.getFecha().toString() : "—",   fBody, rowBg, Element.ALIGN_CENTER);
             addPdfCell(table, hora,                                                     fBody, rowBg, Element.ALIGN_CENTER);
