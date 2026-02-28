@@ -18,6 +18,11 @@ public class IdiomaManager {
 
         agregar("app.titulo",           "VisionEdu",            "VisionEdu",           "VisionEdu");
 
+        agregar("menu.proyecto",
+                "Proyecto hecho por Yoselin Flores Quispe",
+                "Project made by Yoselin Flores Quispe",
+                "Projeto feito por Yoselin Flores Quispe");
+
         agregar("login.subtitulo",
                 "Control de Asistencia Biométrico",
                 "Biometric Attendance Control",
@@ -145,6 +150,7 @@ public class IdiomaManager {
         agregar("voz.ya_registro",      "Ya registraste tu asistencia hoy",
                 "You already registered your attendance today",
                 "Você já registrou sua presença hoje");
+
         agregar("gestion.titulo",              "GESTIÓN DE ALUMNOS",   "STUDENT MANAGEMENT",   "GESTÃO DE ALUNOS");
         agregar("gestion.datos",               "Datos del Alumno",     "Student Data",         "Dados do Aluno");
         agregar("gestion.registrar",           "Registrar",            "Register",             "Registrar");

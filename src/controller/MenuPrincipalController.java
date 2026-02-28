@@ -26,8 +26,9 @@ public class MenuPrincipalController {
     @FXML private Button btnHistorialAsistencia;
     @FXML private Button btnToggleTheme;
     @FXML private Button btnIdioma;
-    @FXML private Button btnCerrarSesion;   // ← nuevo
-    @FXML private Label  lblSubtitulo;      // ← nuevo
+    @FXML private Button btnCerrarSesion;
+    @FXML private Label  lblSubtitulo;
+    @FXML private Label  lblProyecto;   // ← nuevo
 
     @FXML
     public void initialize() {
@@ -56,6 +57,9 @@ public class MenuPrincipalController {
         }
         if (lblSubtitulo != null) {
             lblSubtitulo.setText(IdiomaManager.t("menu.subtitulo"));
+        }
+        if (lblProyecto != null) {
+            lblProyecto.setText(IdiomaManager.t("menu.proyecto"));
         }
         if (btnCerrarSesion != null) {
             btnCerrarSesion.setText(IdiomaManager.t("menu.cerrar_sesion"));

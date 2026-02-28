@@ -30,7 +30,6 @@
             <Label text="VISIONEDU"
                    styleClass="label-title"
                    style="-fx-font-size: 90px; -fx-font-weight: bold;" />
-            <!-- fx:id para traducción -->
             <Label fx:id="lblSubtitulo"
                    styleClass="label-subtitle"
                    style="-fx-font-size: 26px;" />
@@ -55,12 +54,34 @@
                     style="-fx-font-size: 28px; -fx-font-weight: bold;"
                     onAction="#handleHistorialAsistencia" />
 
-
             <Button fx:id="btnCerrarSesion"
                     prefHeight="80" prefWidth="340"
                     styleClass="logout-button"
                     style="-fx-font-size: 20px; -fx-font-weight: bold;"
                     onAction="#handleCerrarSesion" />
+
+            <VBox alignment="CENTER" spacing="6">
+                <Separator>
+                    <style>
+                        -fx-background-color: linear-gradient(to right, transparent, #5c6bc0, transparent);
+                        -fx-opacity: 0.6;
+                    </style>
+                </Separator>
+
+                <Label fx:id="lblProyecto"
+                       style="-fx-font-size: 13px; -fx-font-style: italic;
+                              -fx-text-fill: #9fa8da; -fx-letter-spacing: 1px;
+                              -fx-effect: dropshadow(gaussian, #3949ab, 6, 0.3, 0, 0);" />
+
+                <Separator>
+                    <style>
+                        -fx-background-color: linear-gradient(to right, transparent, #5c6bc0, transparent);
+                        -fx-opacity: 0.6;
+                    </style>
+                </Separator>
+            </VBox>
+
         </VBox>
     </VBox>
+
 </StackPane>
